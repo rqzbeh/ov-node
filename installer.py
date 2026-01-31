@@ -192,12 +192,12 @@ def uninstall_ovnode():
         print("Please wait...")
 
         # Handle potential NAT detection prompt before menu appears
-        index = bash.expect([r"Public IPv4 address / hostname.*:", "Option:"], timeout=30)
+        index = bash.expect([r"Public IPv4 address / hostname.*:", r"Option:"], timeout=30)
         if index == 0:
             # NAT detected, send Enter to accept default IP
             bash.sendline("")
             # Now expect the menu
-            bash.expect("Option:", timeout=30)
+            bash.expect(r"Option:", timeout=30)
         
         # Select option 3 (Remove OpenVPN)
         bash.sendline("3")
