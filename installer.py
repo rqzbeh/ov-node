@@ -49,6 +49,7 @@ def install_ovnode():
         print("Running OV-Node installer...")
 
         prompts = [
+            (r"Public IPv4 address / hostname.*:", ""),  # NAT detection - accept default
             (r"Which IPv4 address should be used.*:", "1"),
             (r"Protocol.*:", "2"),
             (r"Port.*:", "1194"),
@@ -190,7 +191,16 @@ def uninstall_ovnode():
         subprocess.run(["clear"])
         print("Please wait...")
 
-        bash.expect("Option:")
+        # Handle potential NAT detection prompt before menu appears
+        # Timeout reduced to 30s since script should respond quickly once started
+        index = bash.expect([r"Public IPv4 address / hostname.*:", r"Option:"], timeout=30)
+        if index == 0:
+            # NAT detected, send Enter to accept default IP
+            bash.sendline("")
+            # Now expect the menu
+            bash.expect(r"Option:", timeout=30)
+        
+        # Select option 3 (Remove OpenVPN)
         bash.sendline("3")
 
         bash.expect("Confirm OpenVPN removal")
