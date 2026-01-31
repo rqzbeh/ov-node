@@ -115,7 +115,7 @@ def update_ovnode():
         input("Press Enter to return to the menu...")
         menu()
     try:
-        repo = "https://api.github.com/repos/primeZdev/ov-node/releases/latest"
+        repo = "https://api.github.com/repos/rqzbeh/ov-node/releases/latest"
         install_dir = "/opt/ov-node"
         env_file = os.path.join(install_dir, ".env")
         backup_env = "/tmp/ovnode_env_backup"
@@ -203,7 +203,7 @@ def uninstall_ovnode():
         bash.expect(pexpect.EOF, timeout=60)
         bash.close()
 
-        pexpect.run("rm -rf /etc/openvpn")
+        subprocess.run(["rm", "-rf", "/etc/openvpn"], check=False)
 
         print(
             Fore.GREEN
