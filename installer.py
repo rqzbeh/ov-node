@@ -191,7 +191,7 @@ def uninstall_ovnode():
             menu()
 
         bash = pexpect.spawn("bash /root/openvpn-install.sh", timeout=300)
-        subprocess.run("clear")
+        subprocess.run(["clear"])
         print("Please wait...")
 
         bash.expect("Option:")
@@ -264,7 +264,7 @@ def deactivate_ovnode() -> None:
 
 
 def menu():
-    subprocess.run("clear")
+    subprocess.run(["clear"])
     print(Fore.BLUE + "=" * 34)
     print("Welcome to the OV-Node Installer")
     print("=" * 34 + Style.RESET_ALL)
