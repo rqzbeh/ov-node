@@ -67,7 +67,7 @@ wget -qO- https://raw.githubusercontent.com/rqzbeh/ov-node/main/install.sh | bas
 1. Updates system packages
 2. Installs required dependencies (Python 3, git, wget, curl)
 3. Installs `uv` package manager
-4. Downloads the latest OV-Node release
+4. Clones the latest OV-Node code from GitHub
 5. Installs Python dependencies
 6. Launches the interactive installer menu
 

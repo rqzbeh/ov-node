@@ -2,7 +2,6 @@ import os
 import pexpect, sys
 import subprocess
 import shutil
-import requests
 from uuid import uuid4
 from colorama import Fore, Style
 
@@ -115,39 +114,26 @@ def update_ovnode():
         input("Press Enter to return to the menu...")
         menu()
     try:
-        repo = "https://api.github.com/repos/rqzbeh/ov-node/releases/latest"
         install_dir = "/opt/ov-node"
         env_file = os.path.join(install_dir, ".env")
         backup_env = "/tmp/ovnode_env_backup"
 
-        response = requests.get(repo)
-        response.raise_for_status()
-        release = response.json()
-
-        download_url = release["tarball_url"]
-        filename = "/tmp/ov-node-latest.tar.gz"
-
-        print(Fore.YELLOW + f"Downloading {download_url}" + Style.RESET_ALL)
-        subprocess.run(["wget", "-O", filename, download_url], check=True)
-
+        # Backup .env file
         if os.path.exists(env_file):
             shutil.copy2(env_file, backup_env)
+            print(Fore.YELLOW + "Backed up configuration..." + Style.RESET_ALL)
 
-        if os.path.exists(install_dir):
-            shutil.rmtree(install_dir)
+        # Update using git
+        print(Fore.YELLOW + "Updating from repository..." + Style.RESET_ALL)
+        os.chdir(install_dir)
+        subprocess.run(["git", "pull"], check=True)
 
-        os.makedirs(install_dir, exist_ok=True)
-
-        subprocess.run(
-            ["tar", "-xzf", filename, "-C", install_dir, "--strip-components=1"],
-            check=True,
-        )
-
+        # Restore .env file
         if os.path.exists(backup_env):
             shutil.move(backup_env, env_file)
+            print(Fore.YELLOW + "Restored configuration..." + Style.RESET_ALL)
 
         print(Fore.YELLOW + "Installing requirements..." + Style.RESET_ALL)
-        os.chdir(install_dir)
         subprocess.run(["uv", "sync"], check=True)
 
         run_ovnode()
@@ -157,6 +143,8 @@ def update_ovnode():
 
     except Exception as e:
         print(Fore.RED + f"Update failed: {e}" + Style.RESET_ALL)
+        input("Press Enter to return to the menu...")
+        menu()
 
 
 def restart_ovnode():

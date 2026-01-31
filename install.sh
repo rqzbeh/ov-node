@@ -26,24 +26,14 @@ if ! command -v uv &> /dev/null; then
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Download repo release
+# Download repo
 if [ ! -d "$INSTALL_DIR" ]; then
-    echo -e "${YELLOW}Downloading latest release...${NC}"
-
-    LATEST_URL=$(curl -s https://api.github.com/repos/rqzbeh/ov-node/releases/latest \
-        | grep "tarball_url" \
-        | cut -d '"' -f 4)
-
-    mkdir -p "$INSTALL_DIR"
-    cd /tmp
-
-    wget -O latest.tar.gz "$LATEST_URL"
-
-    echo -e "${YELLOW}Extracting...${NC}"
-    tar -xzf latest.tar.gz -C "$INSTALL_DIR" --strip-components=1
-    rm -f latest.tar.gz
+    echo -e "${YELLOW}Cloning repository...${NC}"
+    git clone "$REPO_URL" "$INSTALL_DIR"
 else
-    echo -e "${GREEN}Directory exists, skipping download.${NC}"
+    echo -e "${GREEN}Directory exists, updating...${NC}"
+    cd "$INSTALL_DIR"
+    git pull
 fi
 
 cd "$INSTALL_DIR"
