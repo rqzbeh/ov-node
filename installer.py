@@ -118,6 +118,14 @@ def update_ovnode():
         env_file = os.path.join(install_dir, ".env")
         backup_env = "/tmp/ovnode_env_backup"
 
+        # Check if it's a git repository
+        git_dir = os.path.join(install_dir, ".git")
+        if not os.path.exists(git_dir):
+            print(Fore.RED + "Error: Installation directory is not a git repository." + Style.RESET_ALL)
+            print("Please reinstall OV-Node using the install script.")
+            input("Press Enter to return to the menu...")
+            menu()
+
         # Backup .env file
         if os.path.exists(env_file):
             shutil.copy2(env_file, backup_env)

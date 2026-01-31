@@ -131,7 +131,7 @@ uv run python installer.py
 - Only available if not already installed
 
 #### 2. Update
-- Downloads the latest OV-Node release
+- Pulls the latest changes from the repository
 - Preserves your `.env` configuration
 - Reinstalls dependencies
 - Restarts the service
