@@ -3,7 +3,7 @@ set -e
 
 APP_NAME="ov-node"
 INSTALL_DIR="/opt/$APP_NAME"
-REPO_URL="https://github.com/primeZdev/ov-node"
+REPO_URL="https://github.com/rqzbeh/ov-node"
 PYTHON="/usr/bin/python3"
 
 GREEN="\033[0;32m"
@@ -15,35 +15,25 @@ apt update -y
 apt install -y python3 python3-full python3-venv wget curl git
 
 echo -e "${YELLOW}Installing uv...${NC}"
-wget -qO- https://astral.sh/uv/uv/install.sh | sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 export PATH="$HOME/.local/bin:$PATH"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 
 if ! command -v uv &> /dev/null; then
     echo -e "${YELLOW}uv not found in PATH, trying alternative installation...${NC}"
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    wget -qO- https://astral.sh/uv/install.sh | sh
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Download repo release
+# Download repo
 if [ ! -d "$INSTALL_DIR" ]; then
-    echo -e "${YELLOW}Downloading latest release...${NC}"
-
-    LATEST_URL=$(curl -s https://api.github.com/repos/primeZdev/ov-node/releases/latest \
-        | grep "tarball_url" \
-        | cut -d '"' -f 4)
-
-    mkdir -p "$INSTALL_DIR"
-    cd /tmp
-
-    wget -O latest.tar.gz "$LATEST_URL"
-
-    echo -e "${YELLOW}Extracting...${NC}"
-    tar -xzf latest.tar.gz -C "$INSTALL_DIR" --strip-components=1
-    rm -f latest.tar.gz
+    echo -e "${YELLOW}Cloning repository...${NC}"
+    git clone "$REPO_URL" "$INSTALL_DIR"
 else
-    echo -e "${GREEN}Directory exists, skipping download.${NC}"
+    echo -e "${GREEN}Directory exists, updating...${NC}"
+    cd "$INSTALL_DIR"
+    git pull
 fi
 
 cd "$INSTALL_DIR"
