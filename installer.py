@@ -192,6 +192,7 @@ def uninstall_ovnode():
         print("Please wait...")
 
         # Handle potential NAT detection prompt before menu appears
+        # Timeout reduced to 30s since script should respond quickly once started
         index = bash.expect([r"Public IPv4 address / hostname.*:", r"Option:"], timeout=30)
         if index == 0:
             # NAT detected, send Enter to accept default IP
